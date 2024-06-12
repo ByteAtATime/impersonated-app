@@ -13,11 +13,15 @@
 	let modalOpen = false;
 
 	const connect = async () => {
+		if (!$web3wallet) return;
+
 		isConnecting = true;
-		await web3wallet.core.pairing.pair({ uri });
+		await $web3wallet.core.pairing.pair({ uri });
 	};
 
 	const onProposal = async ({id, params}: Web3WalletTypes.EventArguments["session_proposal"]) => {
+		if (!$web3wallet) return;
+
 		isConnecting = true;
 
 		const namespaces = buildApprovedNamespaces({
@@ -32,7 +36,7 @@
 			}
 		})
 
-		await web3wallet.approveSession({
+		await $web3wallet.approveSession({
 			id,
 			namespaces
 		})
@@ -43,10 +47,12 @@
 		onConnect();
 	}
 
-	onMount(() => {
-		web3wallet.on("session_proposal", onProposal);
+	web3wallet.subscribe(() => {
+		if (!$web3wallet) return;
 
-		return () => web3wallet.off("session_proposal", onProposal);
+		$web3wallet.on("session_proposal", onProposal);
+
+		return () => $web3wallet.off("session_proposal", onProposal);
 	})
 </script>
 

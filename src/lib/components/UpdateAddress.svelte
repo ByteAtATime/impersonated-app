@@ -7,13 +7,15 @@
 	let modalOpen = false;
 
 	const update =async () => {
+		if (!$web3wallet) return;
+
 		$impersonatedAddress = newAddress;
 
-		const sessions = web3wallet.getActiveSessions()
+		const sessions = $web3wallet.getActiveSessions()
 
 		for (const topic in sessions) {
 			const session = sessions[topic];
-			await web3wallet.updateSession({
+			await $web3wallet.updateSession({
 				topic,
 				namespaces: {
 					...session.namespaces,
@@ -24,7 +26,7 @@
 				}
 			});
 
-			await web3wallet.emitSessionEvent({
+			await $web3wallet.emitSessionEvent({
 				topic,
 				event: {
 					name: "accountsChanged",

@@ -4,18 +4,19 @@
 	import ConnectModal from '$lib/components/ConnectModal.svelte';
 	import { EllipsisVertical, Icon } from 'svelte-hero-icons';
 	import type { Web3WalletTypes } from '@walletconnect/web3wallet';
-	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
 	import UpdateAddress from '$lib/components/UpdateAddress.svelte';
 	import { impersonatedAddress } from '$lib/address';
 
- 	let connections = web3wallet.getActiveSessions();
+ 	$: connections = $web3wallet?.getActiveSessions() ?? {};
 
 	const updateConnections = () => {
-		connections = web3wallet.getActiveSessions();
+		connections = $web3wallet?.getActiveSessions() ?? {};
 	};
 
-	onMount(() => {
+	web3wallet.subscribe(_ => {
+		if (!$web3wallet) return;
+
 		const handleSessionDelete = ({ topic }: Web3WalletTypes.EventArguments['session_delete']) => {
 			const dappName = connections[topic].peer.metadata.name;
 			toast.error(`dApp "${dappName}" has been disconnected!`);
@@ -26,23 +27,25 @@
 		const signals = ['session_request', 'auth_request', 'proposal_expire', 'session_request_expire', 'session_authenticate'] as Web3WalletTypes.Event[];
 
 		for (const signal of signals) {
-			web3wallet.on(signal, updateConnections);
+			$web3wallet.on(signal, updateConnections);
 		}
 
-		web3wallet.on('session_delete', handleSessionDelete);
+		$web3wallet.on('session_delete', handleSessionDelete);
 
 		return () => {
 			for (const signal of signals) {
-				web3wallet.off(signal, updateConnections);
+				$web3wallet.off(signal, updateConnections);
 			}
 
-			web3wallet.off('session_delete', handleSessionDelete);
+			$web3wallet.off('session_delete', handleSessionDelete);
 		};
-	});
+	})
 
 	const disconnect = (topic: string) => async () => {
+		if (!$web3wallet) return;
+
 		try {
-			await web3wallet.disconnectSession({ topic, reason: getSdkError('USER_DISCONNECTED') });
+			await $web3wallet.disconnectSession({ topic, reason: getSdkError('USER_DISCONNECTED') });
 
 			toast.success('Disconnected successfully!');
 		} catch (e: any) {
