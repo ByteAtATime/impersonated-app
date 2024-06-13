@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
 	import { Icon, PencilSquare } from 'svelte-hero-icons';
 	import { impersonatedAddress } from '$lib/address';
 	import { web3wallet } from '$lib/wallet';
 	import AddressInput from '$lib/components/AddressInput.svelte';
+	import { isAddress } from 'viem';
 
-	let newAddress = $impersonatedAddress;
+	let newAddress = $impersonatedAddress!;
 	let modalOpen = false;
 
 	const update = async () => {
@@ -58,7 +59,7 @@
 			</label>
 			<div class="flex w-full flex-col gap-y-2">
 				<AddressInput placeholder="Impersonated Address" bind:value={newAddress} />
-				<button class="btn btn-primary" on:click={update}>Update</button>
+				<button class="btn btn-primary" on:click={update} disabled={!isAddress(newAddress)}>Update</button>
 			</div>
 		</label>
 	</label>

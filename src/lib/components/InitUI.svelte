@@ -17,6 +17,6 @@
 
 	<div class="join">
 		<AddressInput bind:value={initialAddress} />
-		<button class="btn btn-primary join-item" on:click={connect}>Let's go!</button>
+		<button class="btn btn-primary join-item" on:click={connect} disabled={!isAddress(initialAddress)}>Let's go!</button>
 	</div>
 </div>
