@@ -5,10 +5,10 @@
 </script>
 
 {#if $impersonatedAddress === undefined}
-	<div class="flex justify-center items-center min-h-screen">
+	<div class="flex min-h-screen items-center justify-center">
 		<div class="loading loading-lg"></div>
 	</div>
-	{:else if $impersonatedAddress === null}
+{:else if $impersonatedAddress === null}
 	<InitUI />
 {:else}
 	<WalletUI />
