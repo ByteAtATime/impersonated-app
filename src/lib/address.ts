@@ -1,9 +1,17 @@
-import { writable } from 'svelte/store';
+import { type Writable, writable } from 'svelte/store';
+import { browser } from '$app/environment';
 
-export const impersonatedAddress = writable("0x34aA3F359A9D614239015126635CE7732c18fDF3");
+/** undefined = still loading, null = no address chosen */
+export const impersonatedAddress: Writable<string|undefined|null> = writable(undefined);
+
+if (browser) {
+	const $impersonatedAddress = localStorage.getItem('impersonatedAddress');
+	if ($impersonatedAddress) impersonatedAddress.set($impersonatedAddress);
+	else impersonatedAddress.set(null);
+}
 
 impersonatedAddress.subscribe($impersonatedAddress => {
-	if (typeof localStorage === 'undefined') return;
+	if (typeof localStorage === 'undefined' || !$impersonatedAddress) return;
 
 	localStorage.setItem('impersonatedAddress', $impersonatedAddress);
 })
