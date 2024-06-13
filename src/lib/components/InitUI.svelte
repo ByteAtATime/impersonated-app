@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { impersonatedAddress } from '$lib/address';
 	import AddressInput from '$lib/components/AddressInput.svelte';
+	import { isAddress } from 'viem';
 
 	let initialAddress = '';
 
