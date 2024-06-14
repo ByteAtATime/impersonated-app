@@ -4,6 +4,11 @@
 	import InitUI from '$lib/components/InitUI.svelte';
 </script>
 
+<svelte:head>
+	<title>Impersonated.App</title>
+	<meta name="description" content="Impersonate any Ethereum address and interact with dApps!" />
+</svelte:head>
+
 {#if $impersonatedAddress === undefined}
 	<div class="flex min-h-screen items-center justify-center">
 		<div class="loading loading-lg"></div>
