@@ -44,6 +44,8 @@
 		modalOpen = false;
 
 		onConnect();
+
+		uri = '';
 	};
 
 	web3wallet.subscribe(() => {
